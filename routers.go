@@ -13,7 +13,7 @@ import (
 )
 
 func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	fmt.Fprint(w, "Welcome to sample-scheduler-extender!\n")
+	fmt.Fprint(w, "Welcome to sample-scheduler-extender that we will be extending with Watt API for hackathon 2020!\n")
 }
 
 func Filter(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"math/rand"
 	"strings"
@@ -27,9 +28,32 @@ var predicatesSorted = []string{LuckyPred}
 // it's webhooked to pkg/scheduler/core/generic_scheduler.go#findNodesThatFitPod()
 func filter(args extender.ExtenderArgs) *extender.ExtenderFilterResult {
 	var filteredNodes []v1.Node
+
 	failedNodes := make(extender.FailedNodesMap)
 	pod := args.Pod
+	// create a 2 d array of nodes
+	// nodes names will be the key
+	// watt value will be the value
+	var wattnodemap = make(map[string]int)
 
+	for _, node := range args.Nodes.Items {
+
+		wattnodemap[node.Name] = rand.Intn(2)
+	}
+	// Creating and initializing a map
+	// Using shorthand declaration and
+	// using map literals
+	regionWatt := map[string]int{
+
+		"MISO_MI": 78,
+		"ISONE_WCMA	": 7,
+		"PJM_ATLANTIC": 0,
+		"SOCO":         27,
+		"AECI":         8,
+	}
+
+	fmt.Println("Node's watt value: ", regionWatt["USA"])
+	value1 := regionWatt["USA"]
 	// TODO: parallelize this
 	// TODO: handle error
 	for _, node := range args.Nodes.Items {
@@ -52,6 +76,7 @@ func filter(args extender.ExtenderArgs) *extender.ExtenderFilterResult {
 	return &result
 }
 
+// This is the method which should be changed for Watt API
 func podFitsOnNode(pod *v1.Pod, node v1.Node) (bool, []string, error) {
 	fits := true
 	var failReasons []string
@@ -66,7 +91,11 @@ func podFitsOnNode(pod *v1.Pod, node v1.Node) (bool, []string, error) {
 	return fits, failReasons, nil
 }
 
+//Luckypredicate  main function where we will
+//Build array of regions and their corresponding WATT API values
+// Lucky predicate will choose the lowest value and return.
 func LuckyPredicate(pod *v1.Pod, node v1.Node) (bool, []string, error) {
+
 	lucky := rand.Intn(2) == 0
 	if lucky {
 		log.Printf("pod %v/%v is lucky to fit on node %v\n", pod.Name, pod.Namespace, node.Name)

@@ -19,5 +19,5 @@ func main() {
 	router.POST("/filter", Filter)
 	router.POST("/prioritize", Prioritize)
 
-	log.Fatal(http.ListenAndServe(":8888", router))
+	log.Fatal(http.ListenAndServe(":8889", router))
 }
